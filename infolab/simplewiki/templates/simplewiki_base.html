@@ -1,0 +1,182 @@
+{% load i18n simplewiki_utils %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+<title>Infolab: Web & Distributed Information Management | Texas A&M University
+{{ wiki_title }}</title>
+
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+<link rel="stylesheet" type="text/css" href="/static/global.css"/>
+<link href="/static/prettify/prettify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="/static/prettify/prettify.js"></script>
+{% block head-extra %}{% endblock %}
+
+<link rel="stylesheet" media="screen,print" href="{{"simplewiki/css/base.css"|prepend_media_url}}" />
+<link rel="stylesheet" media="print" href="{{"simplewiki/css/base_print.css"|prepend_media_url}}" />
+<link rel="stylesheet" href="{{"simplewiki/css/autosuggest_inquisitor.css"|prepend_media_url}}" />
+<script type="text/javascript" src="{{"simplewiki/js/bsn.AutoSuggest_c_2.0.js"|prepend_media_url}}"></script>
+<script type="text/javascript">
+        function set_related_article_id(s) {
+                document.getElementById('wiki_related_input_id').value = s.id;
+                document.getElementById('wiki_related_input_submit').disabled=false;
+        }
+        var x = window.onload;
+        window.onload = function(){
+                        var options = {
+                        script: "{% url search_related wiki_article.get_url %}/?self={{wiki_article.pk }}&",
+                        json: true,
+                        varname: "query",
+                        maxresults: 35,
+                        callback: set_related_article_id,
+                        noresults: "{% trans "Nothing found!" %}"
+                };
+                var as = new AutoSuggest('wiki_related_input', options);
+                if (typeof x == 'function')
+                        x();
+        }
+</script>
+{% block wiki_head %}
+{% endblock %}
+
+</head>
+<body onload="prettyPrint()">
+<div id="container">
+	<div id="headerContainer">
+	<div id="headerMain"><h1><a href="/">Infolab: Web & Distributed Information Management</a></h1></div>
+	<div id="headerright">
+		<h1><a href="http://tamu.edu/">Texas A&M University</a></h1>
+        </div>
+	</div>
+ 
+<!-- start nav -->
+	<span class="preload1"></span>
+	<span class="preload2"></span>
+ 	<ul id="nav">
+<li {% if not section %}
+    {% if not request.META.PATH_INFO %}
+        id="on"
+    {% endif %}
+    {% endif %} class="top"><a href="/" class="top_link"><span>HOME</span></a></li>
+<li id="on" class="top"><a href="/w/" class="top_link"><span>WIKI</span></a></li>
+<li
+    {% ifequal section "people" %} id="on"{% endifequal %}
+    {% ifequal request.META.PATH_INFO|slice:"1:7" "people" %} id="on"{% endifequal %}
+    class="top"><a href="/people" class="top_link"><span>PEOPLE</span></a></li>
+<li
+    {% ifequal request.META.PATH_INFO|slice:"1:9" "projects" %} id="on"{% endifequal %}
+    class="top"><a href="/projects" class="top_link"><span>PROJECTS</span></a></li>
+<li
+    {% ifequal section "pub" %} id="on"{% endifequal %}
+    class="top"><a href="/pub" class="top_link"><span>PUBLICATIONS</span></a></li>
+<li
+    {% ifequal request.META.PATH_INFO|slice:"1:10" "resources" %} id="on"{% endifequal %}
+    class="top"><a href="/resources" class="top_link"><span>RESOURCES</span></a></li>
+	</ul>
+<!-- end nav -->
+<!--- start content -->
+	<div id="contentWrapper">
+		<div id="content">
+
+<h1>{% block wiki_page_title %}{% endblock %}</h1>
+
+{% block content %}
+<div id="left">{% block wiki_body %}{% endblock %}</div>
+<div id="right"><div id="righttop"></div><div id="rightcontent">
+{% block right-content %}{% endblock %}
+
+  <p>
+  {% if wiki_article %}            
+        <a href='{% url wiki_edit wiki_article.get_url %}'>edit</a> &bull;
+        <a href='{% url wiki_history wiki_article.get_url 1 %}'>history</a>
+  {% endif %}
+  </p>
+
+  {% if wiki_article %}
+  <p>
+  <i>{% trans "Last modified" %}: {{ wiki_article.modified_on|date }}, {{ wiki_article.modified_on|time }}</i>
+  </p>
+  {% endif %}
+
+    <hr/>
+
+  {% with "this.wiki_article_name.value.replace(/([^a-zA-Z0-9\-])/g, '')+'/_create/'" as theaction %}
+  <form method="GET" onsubmit="this.action='{% url wiki_view "" %}{{ wiki_article.get_url }}/' + {{ theaction }};">
+  {% endwith %}
+  <p>
+  <label for="id_wiki_article_name">create article</label>
+  <input type="text" name="wiki_article_name" id="id_wiki_article_name" /><br/>
+  </p>
+  </form>
+
+
+  {% if wiki_article %}
+    {% if wiki_article.locked %}
+    <hr/>
+        <p><strong>{% trans "This article has been locked" %}</strong></p>
+    {% endif %}
+        
+    {% if wiki_article.related.all %}
+    <hr/>
+        <h2>Related articles</h2>
+        <p>
+        {% for rel in wiki_article.related.all %}
+                <span class="related">
+                {% if wiki_write %}
+                <a href="javascript:if(confirm('{% trans "Are you sure, you want to delete this relation?" %}')) { location.href='{% url wiki_remove_relation wiki_article.get_url rel.id%}'; }"><img src="{{ "simplewiki/img/delete.gif"|prepend_media_url }}" alt="{% trans "remove relation" %}" /></a>
+                {% endif %}
+                <a href="{% url wiki_view rel.get_url %}">{{rel.title}}</a>
+                </span>
+        {% endfor %}
+        </p>
+    {% endif %}
+
+
+    {% if wiki_article.attachments %}
+    <hr/>
+    <h2>Attachments</h2>
+        <ul>
+            {% for a in wiki_article.attachments %}
+            <li><a href="{{a.download_url}}">{{a.filename}}</a> ({{a.get_size|filesizeformat}})</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if wiki_write %}
+    <hr/>
+    <p>
+                <form method="POST" action="{% url add_attachment wiki_article.get_url %}" enctype="multipart/form-data" target="wiki_attach_frame">
+        <label for="attachment">add Attachment</label><input type="file" class="fileinput" name="attachment" size="10" /><br />
+<label for="wiki_attach_overwrite">overwrite same file</label><input type="checkbox" name="overwrite" id="wiki_attach_overwrite" value="1" /> 
+                        <br/>
+                        <input type="submit" value="Attach" />
+                        <div id="wiki_attach_progress_container">
+                                <div id="wiki_attach_progress"><br /></div>
+                        </div>
+                </form>
+                <iframe name="wiki_attach_frame" style="display:none"></iframe>
+                </p>
+        {% endif %}
+
+    {% endif %}
+</div><div id="rightbottom"></div></div>
+{% endblock %}
+		</div>
+		<div class="push">{% block side-content %}{% endblock %}</div>
+	</div>
+</div>
+	<div id="footer">
+		<div id="footerInner">
+infolab,
+        301 Harvey R. Bright Bldg, 3112 TAMU, College Station, TX 77843-3112&nbsp;
+         | &copy 2009 TAMU, All Rights Reserved.
+        <br>
+        <a href="http://www.cse.tamu.edu">Department of Computer Science and Engineering</a> 
+        | <a href="http://aggieengineer.tamu.edu/">Dwight Look College of Engineering</a> 
+        | <a href="http://www.tamu.edu">Texas A&amp;M University</a></small> <br/>
+        Privacy statement: <a href="http://www.cse.tamu.edu/department/policies/privacy">Computer Science and Engineering</a> <a href="http://engineer.tamu.edu/policies/#privacy">Engineering</a> <a href="http://www.tamu.edu/home/statements/privacy.html">TAMU</A> 
+		</div>
+
+        </div>
+</body>
+</html>

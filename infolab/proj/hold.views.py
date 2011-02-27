@@ -66,9 +66,9 @@ where to_user_id = %s and as_of_time >= '2009-09-15'
 def twletterdata(request, name):
     c = _db_cur()
     c.execute("""
-select as_of, score03, score10, score50, deg
+select as_of,sum(score03) as score03, sum(score10) as score10, sum(score50) as  score50, deg
 from """ + "indeg_%s"%name.lower()[0] + """
-where to_user = %s """,(name.lower(),))
+where to_user = %s group by as_of """,(name.lower(),))
     data = {'d03':[], 'd10':[], 'd50':[], 'indeg':[]}
     for d in c:
         data['indeg'].append((1000 * mktime(d['as_of'].timetuple()), d['deg']))

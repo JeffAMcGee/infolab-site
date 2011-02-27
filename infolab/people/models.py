@@ -12,6 +12,7 @@ class Paper(models.Model):
 GROUPINGS = ( ('fac', 'Faculty'),
     ('PhD', 'PhD Students'),
     ('Mas', 'Masters Students'),
+    ('Alu', 'Alumnus'),
     )
 
 class Person(User):

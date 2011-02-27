@@ -8,10 +8,12 @@ def index(request):
     faculty = Person.objects.filter(grouping__exact='fac').order_by("last_name")
     phds = Person.objects.filter(grouping__exact='PhD').order_by("last_name")
     masters = Person.objects.filter(grouping__exact='Mas').order_by("last_name")
+    alumnus = Person.objects.filter(grouping__exact='Alu').order_by("last_name")
     return render_to_response('people/list.html', {'section': 'people',
         'faculty':faculty,
         'phds':phds,
-        'masters':masters
+        'masters':masters,
+        'alumnus':alumnus,
         })
 
 

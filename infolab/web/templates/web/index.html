@@ -1,6 +1,35 @@
 {% extends 'base.html' %}
+{% load markup %}
 
 {% block left-content %}
+    <div class="howdy">
+  <h1 class="featureHeader">Howdy!</h1>
+  <p>
+Howdy! Welcome to the infolab at Texas A&M University. Our research lab focuses
+on Web-scale information management, distributed data-intensive systems, and
+social computing. 
+    </p>
+
+<p>
+Our overall research goal is to enable efficient and trustworthy information
+sharing and knowledge discovery over dynamic, heterogenous, and massive-scale
+networked information systems. From the World Wide Web to distributed databases
+to emerging social/mobile information systems, these large-scale networked
+systems place great demands on knowing whom and what information to trust and
+how to enable efficient and personalized access, all while maintaining the core
+open and self-organizing principles of these systems.
+</p>
+
+<p>
+Recently, we have been investigating questions related to:
+<ul>
+<li>Mining and modeling information quality and trust in social information systems</li>
+<li>Developing new models of social information search, exploration, and knowledge discovery</li>
+<li>Spam-resilient web-scale computing </li>
+</ul>
+<p>
+    </div>
+
   <div class="post-list">
   <h1 class="featureHeader">Latest News</h1>
     {% for post in posts %}
@@ -8,9 +37,9 @@
       <h3 class="title"><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
       <div class="meta">posted {{ post.publish|timesince }} ago by <a href="/people/{{ post.author }}">{{post.author.first_name}}</a></div>
       <p class="tease">{% if post.tease %}
-{{ post.tease }}
+{{ post.tease|markdown }}
 {% else %}
-{{ post.body|slice:":360" }}{% if post.body|slice:"361:" %}... <a href="{{ post.get_absolute_url }}">[read more]</a>{% endif %}
+{{ post.body|slice:":360"|markdown }}{% if post.body|slice:"361:" %}... <a href="{{ post.get_absolute_url }}">[read more]</a>{% endif %}
 {% endif %}</p>
     </div>
     {% endfor %}

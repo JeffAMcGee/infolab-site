@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block head-extra %}
+<script src="http://www.google.com/jsapi"></script>
+<script>
+  // Load jQuery
+  google.load("jquery", "1");
+</script>
+<script language="javascript" type="text/javascript" src="/static/flot/jquery.flot.pack.js"></script>
+{% endblock %}
+
+{% block content %}
+
+
+<div id="placeholder" style="width:800px;height:500px;"></div>
+
+<script language="javascript" type="text/javascript" >
+$(function () {
+    {% for p in plots %}
+        var d_{{p.label}} = {{p.data}};
+    {% endfor %}
+    $.plot($("#placeholder"), 
+        [
+        {% for p in plots %}
+            {data: d_{{p.label}}, color: "{{p.color}}", label: "{{p.label}}"}{% if not forloop.last %},{% endif %}
+        {% endfor %} 
+        ], {
+        legend: { position: 'ne' },
+        lines: { show: true },
+        {% if xaxis %}
+        xaxis: {{ xaxis|safe }},
+        {% endif %}
+        });
+});
+</script>
+{% endblock %}

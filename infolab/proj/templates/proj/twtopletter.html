@@ -22,9 +22,9 @@ $(function () {
     $.plot($("#placeholder"), 
         [
        {% for t in toptw %} 
-        {data: d_{{t}}["d03"], label: "{{t}} .03"},
         {data: d_{{t}}["d10"], label: "{{t}} .10"},
-        {data: d_{{t}}["d50"], label: "{{t}} .50"}
+        {data: d_{{t}}["d50"], label: "{{t}} .50"},
+        {data: d_{{t}}["indeg"], label: "{{t}} indegree"}
         {% if not forloop.last %},{% endif %}
        {% endfor %} 
          ], {

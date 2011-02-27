@@ -2,7 +2,7 @@
 
 
 DEBUG = True
-TEMPLATE_DEBUG = DEBUG
+TEMPLATE_DEBUG = False # DEBUG
 
 FORCE_SCRIPT_NAME = ''
 
@@ -39,6 +39,7 @@ MEDIA_ROOT = '/www/infolab/htdocs/static/'
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/static/'
 
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
@@ -60,6 +61,10 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.core.context_processors.i18n",
     "django.core.context_processors.request",
     "django.core.context_processors.media",
+    'django.core.context_processors.debug',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'softwarefabrica.django.utils.viewshelpers.context_vars',
 )
 
 
@@ -92,7 +97,21 @@ INSTALLED_APPS = (
     'tagging',
     'basic.blog',
     'basic.inlines',
+    'infolab.stats',
+    'infolab.proj',
+    'infolab.twitter',
+
+    'infolab.sketch',
+
+    'django.contrib.markup',
+    'softwarefabrica.django.utils',
+    'softwarefabrica.django.forms',
+    'softwarefabrica.django.crud',
+    'softwarefabrica.django.wiki',
+
+
 )
 
+# pull in local settings
 from settings_prod import *
 

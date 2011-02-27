@@ -6,8 +6,27 @@
 {% block title %}{% endblock %}</title>
 <link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 <link rel="stylesheet" type="text/css" href="/static/global.css"/>
+<link href="/static/prettify/prettify.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="/static/prettify/prettify.js"></script>
+
+  <!-- calendar -->
+  <link rel="stylesheet" type="text/css" href="/static/js/jscalendar/calendar-win2k-cold-2.css" />
+  <script type="text/javascript" src="/static/js/jscalendar/calendar.js"></script>
+  <!-- this is translation file - choose your language here -->
+  <script type="text/javascript" src="/static/js/jscalendar/lang/calendar-{% if request.LANGUAGE_CODE %}{{ request.LANGUAGE_CODE }}{% else %}en{% endif %}.js"></script>
+  <script type="text/javascript" src="/static/js/jscalendar/calendar-setup.js"></script>
+  <!-- /calendar -->
+  <!-- softwarefabrica.django.forms -->
+  <script language="javascript" type="text/javascript">
+  <!--
+  {% include "forms/js/Related.js" %}
+  // -->
+  </script>
+  <!-- /softwarefabrica.django.forms -->
+
+{% block head-extra %}{% endblock %}
 </head>
-<body>
+<body onload="prettyPrint()">
 <div id="container">
 	<div id="headerContainer">
 	<div id="headerMain"><h1><a href="/">Infolab: Web & Distributed Information Management</a></h1></div>
@@ -25,6 +44,9 @@
         id="on"
     {% endif %}
     {% endif %} class="top"><a href="/" class="top_link"><span>HOME</span></a></li>
+{% ifequal request.META.REMOTE_ADDR|slice:":7" "128.194" %}
+<li class="top"><a href="/w" class="top_link"><span>WIKI</span></a></li>
+{% endifequal %}
 <li
     {% ifequal section "people" %} id="on"{% endifequal %}
     {% ifequal request.META.PATH_INFO|slice:"1:7" "people" %} id="on"{% endifequal %}

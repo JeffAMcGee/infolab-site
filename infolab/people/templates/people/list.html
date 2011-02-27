@@ -40,4 +40,16 @@
    </ul>
 </div>
 
+<div class="people-list">
+<h2>Alumnus</h2>
+  <ul class="square">
+    {% for p in alumnus %}
+     <li> <img src="/static/{{p.face}}" height="24"/>
+<a href="/people/{{p.username}}">{{p.first_name}} {{p.last_name}}</a>
+ {{p.title}}
+     </li>
+    {% endfor %}
+   </ul>
+</div>
+
 {% endblock %}

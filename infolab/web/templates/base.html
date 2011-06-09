@@ -44,9 +44,6 @@
         id="on"
     {% endif %}
     {% endif %} class="top"><a href="/" class="top_link"><span>HOME</span></a></li>
-{% ifequal request.META.REMOTE_ADDR|slice:":7" "128.194" %}
-<li class="top"><a href="/w" class="top_link"><span>WIKI</span></a></li>
-{% endifequal %}
 <li
     {% ifequal section "people" %} id="on"{% endifequal %}
     {% ifequal request.META.PATH_INFO|slice:"1:7" "people" %} id="on"{% endifequal %}
@@ -57,6 +54,9 @@
 <li
     {% ifequal section "pub" %} id="on"{% endifequal %}
     class="top"><a href="/pub" class="top_link"><span>PUBLICATIONS</span></a></li>
+<li
+    {% ifequal request.META.PATH_INFO|slice:"1:5" "data" %} id="on"{% endifequal %}
+    class="top"><a href="/data" class="top_link"><span>DATA</span></a></li>
 <li
     {% ifequal request.META.PATH_INFO|slice:"1:10" "resources" %} id="on"{% endifequal %}
     class="top"><a href="/resources" class="top_link"><span>RESOURCES</span></a></li>
